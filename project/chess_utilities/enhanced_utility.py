@@ -4,7 +4,7 @@ from project.chess_utilities.utility import Utility
 class EnhancedUtility(Utility):
 
     def __init__(self) -> None:
-        # The value of each piece
+        # The value of each piece type
         self.piece_values = {
             chess.PAWN: 1,
             chess.KNIGHT: 3,
