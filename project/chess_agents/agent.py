@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC  # Abstract Base Class
 import chess
 from project.chess_utilities.utility import Utility
 
