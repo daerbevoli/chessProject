@@ -9,7 +9,7 @@ class MinimaxAgent(Agent):
 
     def __init__(self, utility: Utility, time_limit_move: float, depth: int) -> None:
         super().__init__(utility, time_limit_move)
-        self.name = "Agent One"
+        self.name = "Minimax_Agent"
         self.author = "S. Roels & S. Baruwal"
         self.depth = depth  # The depth of the minimax search tree
 
