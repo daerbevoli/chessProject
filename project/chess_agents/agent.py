@@ -4,7 +4,6 @@ from project.chess_utilities.utility import Utility
 
 """A generic agent class"""
 
-
 class Agent(ABC):
 
     def __init__(self, utility: Utility, time_limit_move: float) -> None:
