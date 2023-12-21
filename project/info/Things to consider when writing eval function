@@ -1,0 +1,34 @@
+Material Balance:
+Assign values to each piece (pawn, knight, bishop, rook, queen, king). Traditionally,
+pawns are valued at 1 point, knights and bishops at 3, rooks at 5, queens at 9,
+and the king's value is not explicitly considered.
+
+Piece Mobility:
+Reward pieces for having more available moves.
+For example, a knight in the center of the board generally has more mobility than a knight stuck in a corner.
+
+Piece Coordination:
+Encourage pieces to work together.
+Pieces that control key squares or are positioned in a coordinated manner are often more valuable.
+
+King Safety:
+Penalize positions where the king is exposed or under threat.
+Castled kings, especially behind a pawn structure, are generally considered safer.
+
+Pawn Structure:
+Evaluate the pawn structure, considering factors like pawn chains, isolated pawns, doubled pawns, and pawn islands.
+Certain structures can be advantageous or disadvantageous depending on the context.
+
+Control of Key Squares:
+Reward control of central and key squares. Squares like d4, d5, e4, and e5 are often critical.
+
+Development:
+Favor positions where pieces are developed and contribute to the overall position.
+Developing pieces early in the game is a common chess principle.
+
+King's Pawn Shield:
+Consider the presence of a pawn shield in front of the king, which can contribute to the king's safety.
+
+King's Activity:
+In the endgame, an active king can be a valuable asset.
+Encourage the king to participate in the game when there are fewer pieces on the board.
