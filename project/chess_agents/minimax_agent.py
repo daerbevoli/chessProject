@@ -13,7 +13,7 @@ class MinimaxAgent(Agent):
         self.author = "S. Roels & S. Baruwal"
         self.depth = depth  # The depth of the minimax search tree
 
-    def minimax(self, board: chess.board, depth: int, alpha: float, beta: float, maximizingPlayer: bool) -> int:
+    def minimax(self, board: chess.Board, depth: int, alpha: float, beta: float, maximizingPlayer: bool) -> int:
         # By using maximizingPlayer, we don't' have to flip the values
 
         start_time = time.time()
@@ -36,6 +36,7 @@ class MinimaxAgent(Agent):
                 if beta <= alpha:
                     break
             return max_eval
+
         else:  # If it's the black player's turn (maximizingPlayer = False), the function looks for moves that
             # minimize the board value.
             minEval = float('inf')

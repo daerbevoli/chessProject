@@ -17,7 +17,7 @@ class EnhancedUtility(Utility):
     def board_value(self, board: chess.Board):
         # returns a score representing the value of the board state.
         value = 0
-        for piece_type in self.pieces_values:
+        for piece_type in self.piece_values:
             # Add the value for each white piece
             value += len(board.pieces(piece_type=piece_type, color=chess.WHITE)) * self.piece_values[piece_type]
             # Subtract the value for each black piece
