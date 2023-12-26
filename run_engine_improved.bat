@@ -1,1 +1,1 @@
-python -m project.chess_engines.enhanced_uci_engine
+python -m project.chess_engines.MonteCarloEngine
