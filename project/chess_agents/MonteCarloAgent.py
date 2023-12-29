@@ -1,5 +1,5 @@
 from project.chess_agents.agent import Agent
-from project.chess_utilities.enhanced_utility import Utility
+from project.chess_utilities.utility import Utility
 
 import chess
 import random
@@ -76,7 +76,6 @@ class MonteCarloChessAgent(Agent):
         return self.calculate_score(simulation_board)
 
     def backpropagate(self, node: 'MonteCarloNode', result: float):
-        # Backpropagate the simulation result through the tree
         while node is not None:
             node.visit_count += 1
             node.total_score += result
@@ -99,5 +98,4 @@ class MonteCarloChessAgent(Agent):
         return max(node.children, key=lambda child: child.visit_count)
 
     def calculate_score(self, board: chess.Board) -> float:
-        # Evaluate the utility or score of the given chess board state
         return self.utility.board_value(board)

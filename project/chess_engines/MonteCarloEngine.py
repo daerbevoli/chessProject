@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # Create your utility
     utility = EnhancedUtility()
     # Create your agent
-    agent = MonteCarloChessAgent(utility, 1.0, 1.41)
+    agent = MonteCarloChessAgent(utility, 5.0, 1.41)
     # Create the engine
     engine = UciEngine("Monte Carlo Agent", "SB", agent)
     # Run the engine (will loop until the game is done or exited)
