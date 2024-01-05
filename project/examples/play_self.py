@@ -1,21 +1,23 @@
 #!/usr/bin/python3
-from project.chess_utilities.utility import Utility
 import chess
 import chess.svg
 from project.chess_utilities.example_utility import ExampleUtility
 from project.chess_agents.example_agent import ExampleAgent
 
 from project.chess_utilities.enhanced_utility import EnhancedUtility
+from project.chess_utilities.nnUtility import nnUtility
 from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
+
+#from project.chess_utilities.nnUtility import nnUtility
 
 """ Two agents play against eachother until the game is finished """
 def play_self():
     # Setup a clean board
     board = chess.Board()
     # Create the white and black agent
-    white_player = MonteCarloChessAgent(EnhancedUtility(), 5.0, 1.41)
+    white_player = MonteCarloChessAgent(nnUtility(), 5.0, 1.41)
     white_player.name = "White Player"
-    black_player = ExampleAgent(ExampleUtility(), 5.0)
+    black_player = ExampleAgent(ExampleUtility(), 1.0)
     black_player.name = "Black Player"
 
     running = True
@@ -39,6 +41,7 @@ def play_self():
         # The move is played and the board is printed
         board.push(move)
         print(board)
+        print("counter: ", counter)
         print("----------------------------------------")
         
 
@@ -59,7 +62,7 @@ def play_self():
             print("Draw by insufficient material")
         elif board.is_fivefold_repetition():
             running = False
-            print("Draw by fivefold repitition!")
+            print("Draw by fivefold repetition!")
         elif board.is_seventyfive_moves():
             running = False
             print("Draw by 75-moves rule")

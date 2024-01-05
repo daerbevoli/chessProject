@@ -1,10 +1,11 @@
 from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
 from project.chess_utilities.enhanced_utility import EnhancedUtility
+from project.chess_utilities.nnUtility import nnUtility
 from project.chess_engines.uci_engine import UciEngine
 
 if __name__ == "__main__":
     # Create your utility
-    utility = EnhancedUtility()
+    utility = nnUtility()
     # Create your agent
     agent = MonteCarloChessAgent(utility, 5.0, 1.41)
     # Create the engine
