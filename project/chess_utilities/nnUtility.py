@@ -1,3 +1,5 @@
+import os
+
 import chess
 import torch
 from project.chess_utilities.utility import Utility
@@ -21,9 +23,11 @@ class nnUtility(Utility):
         # Initialize the neural network
         self.neural_network = ChessEvaluationNetwork()
 
+        # Directory of the current file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Load pre-trained weights for the neural network
-        model_path = "C:/Users/samee/OneDrive/Desktop/semester 5/Artificial Intelligence/Lab4" \
-                     "/chess_framework_student/project/chess_utilities/models/model.pth"
+        model_path = os.path.join(current_dir, 'models', 'model.pth')
         self.neural_network.load_state_dict(torch.load(model_path))
 
         # Set the neural network to evaluation mode (no gradient computation)

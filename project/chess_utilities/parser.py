@@ -77,8 +77,7 @@ def parse(testing_or_training: str):
     values = []
 
     # Construct the path to the directory containing PGN files
-    game_path = f"C:/Users/samee/OneDrive/Desktop/semester 5/Artificial Intelligence/Lab4/" \
-                f"chess_framework_student/project/chess_utilities/{testing_or_training}_games"
+    game_path = f"./{testing_or_training}_games"
 
     # Iterate over each PGN file in the specified directory
     for pgn_file in os.listdir(game_path):
@@ -123,9 +122,14 @@ def parse(testing_or_training: str):
     games = np.array(games)
     values = np.array(values)
 
+    # Ensure the directory exists before saving
+    save_dir = f'data/{testing_or_training}/'
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)  # This creates the directory and any parents if they don't exist
+
     # Save the encoded board positions and game outcomes to files
-    np.save(f'data/{testing_or_training}/positions.npy', games)
-    np.save(f'data/{testing_or_training}/results.npy', values)
+    np.save(f'{save_dir}positions.npy', games)
+    np.save(f'{save_dir}results.npy', values)
 
     # Print the number of games and values processed
     print(f"{testing_or_training}_games: {len(games)}")
@@ -133,7 +137,7 @@ def parse(testing_or_training: str):
 
 
 def main():
-    parse("testing")
+    parse("training")
 
 
 if __name__ == '__main__':

@@ -7,17 +7,13 @@ from project.chess_utilities.training import train, test
 
 if __name__ == "__main__":
     # Load training data
-    X_train = torch.tensor(np.load("C:/Users/samee/OneDrive/Desktop/semester 5/Artificial Intelligence"
-                                   "/Lab4/chess_framework_student/project/chess_utilities/data/training/positions.npy")).to(torch.float32)
-    y_train = torch.tensor(np.load("C:/Users/samee/OneDrive/Desktop/semester 5/Artificial Intelligence"
-                                   "/Lab4/chess_framework_student/project/chess_utilities/data/training/results.npy")).to(torch.float32)
+    X_train = torch.tensor(np.load("./data/training/positions.npy")).to(torch.float32)
+    y_train = torch.tensor(np.load("./data/training/results.npy")).to(torch.float32)
     print("Training data loaded")
 
     # Load testing data
-    X_test = torch.tensor(np.load("C:/Users/samee/OneDrive/Desktop/semester 5/Artificial Intelligence"
-                                   "/Lab4/chess_framework_student/project/chess_utilities/data/testing/positions.npy")).to(torch.float32)
-    y_test = torch.tensor(np.load("C:/Users/samee/OneDrive/Desktop/semester 5/Artificial Intelligence"
-                                   "/Lab4/chess_framework_student/project/chess_utilities/data/testing/results.npy")).to(torch.float32)
+    X_test = torch.tensor(np.load("./data/testing/positions.npy")).to(torch.float32)
+    y_test = torch.tensor(np.load("./data/testing/results.npy")).to(torch.float32)
     print("Testing data loaded")
 
     # Create training dataset and dataloader
@@ -45,6 +41,5 @@ if __name__ == "__main__":
     print("Testing complete")
 
     # Save the model
-    model_path = "C:/Users/samee/OneDrive/Desktop/semester 5/Artificial " \
-                 "Intelligence/Lab4/chess_framework_student/project/chess_utilities/models/model.pth"
+    model_path = "./models/model.pth"
     torch.save(model.state_dict(), model_path)
