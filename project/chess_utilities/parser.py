@@ -48,19 +48,20 @@ def bit_encode(board: chess.Board):
         piece = bit_map[type_of_piece]  # Get the binary representation of the piece
         bitstring += piece  # Concatenate the piece bits to the bitstring
 
-    # Add bits for castling rights, en passant, and side to move
-    bitstring.append(int(board.has_queenside_castling_rights(chess.WHITE)))
-    bitstring.append(int(board.has_kingside_castling_rights(chess.WHITE)))
-    bitstring.append(int(board.has_queenside_castling_rights(chess.BLACK)))
-    bitstring.append(int(board.has_kingside_castling_rights(chess.BLACK)))
-    bitstring.append(int(board.has_legal_en_passant()))
-    bitstring.append(int(board.turn == chess.WHITE))
-
-    return bitstring  # Return the final bitstring representing the board state
+    # Add bits for castling rights, en passant, and side to move as additional info
+    additional_info = [
+        int(board.has_queenside_castling_rights(chess.WHITE)),
+        int(board.has_kingside_castling_rights(chess.WHITE)),
+        int(board.has_queenside_castling_rights(chess.BLACK)),
+        int(board.has_kingside_castling_rights(chess.BLACK)),
+        int(board.has_legal_en_passant()),
+        int(board.turn == chess.WHITE)
+    ]
+    return bitstring, additional_info # Return the final bitstring representing the board state and the additional info
 
 
 def parse(testing_or_training: str):
-    """
+    """d
     This function parses through the games (testing or training)
     and converts it into a numpy array of games and their results,
     that then saved into the respective data folder.
@@ -72,9 +73,10 @@ def parse(testing_or_training: str):
     - None
     """
 
-    # Initialize lists to store chess board positions (games) and corresponding game outcomes (values)
+    # Initialize lists to store chess board positions (games), additional info and corresponding game outcomes (values)
     games = []
     values = []
+    additional_info_list = []
 
     # Construct the path to the directory containing PGN files
     game_path = f"./{testing_or_training}_games"
@@ -112,15 +114,20 @@ def parse(testing_or_training: str):
                     # Update the chess board with the current move
                     temp_board.push(move)
                     # Encode the current board state using the bit_encode function
-                    output = bit_encode(temp_board)
-                    # Append the encoded board state to the list of games
-                    games.append(output)
+                    output, additional_info = bit_encode(temp_board)
+                    # Separate the board representation and reshape it
+                    board_representation = output[:768]  # First 768 elements are the board representation
+                    reshaped_board = np.reshape(board_representation, (12, 8, 8))
+                    games.append(reshaped_board)
+                    # Handle the additional information separately in a separate list
+                    additional_info_list.append(additional_info)
                     # Append the corresponding game outcome to the list of values
                     values.append(game_value)
 
     # Convert the lists to NumPy arrays for further processing
     games = np.array(games)
     values = np.array(values)
+    additional_info_array = np.array(additional_info_list)
 
     # Ensure the directory exists before saving
     save_dir = f'data/{testing_or_training}/'
@@ -130,6 +137,8 @@ def parse(testing_or_training: str):
     # Save the encoded board positions and game outcomes to files
     np.save(f'{save_dir}positions.npy', games)
     np.save(f'{save_dir}results.npy', values)
+    # Save the additional_info_array to files
+    np.save(f'{save_dir}additional_info.npy', additional_info_array)
 
     # Print the number of games and values processed
     print(f"{testing_or_training}_games: {len(games)}")
@@ -138,6 +147,7 @@ def parse(testing_or_training: str):
 
 def main():
     parse("training")
+    parse("testing")
 
 
 if __name__ == '__main__':

@@ -21,10 +21,10 @@ def train(model, optimizer: torch.optim.Optimizer, train_data: DataLoader):
     for epoch in range(num_epochs):
         loss = 0
         for data in train_data:
-            games, values = data[0], data[1]
+            games, additional_info,  values = data[0], data[1], data[2]
 
             # Forward pass
-            outputs = model(games)
+            outputs = model(games, additional_info)
 
             # Compute the loss
             loss = criterion(outputs.view(-1), values)
@@ -35,6 +35,7 @@ def train(model, optimizer: torch.optim.Optimizer, train_data: DataLoader):
             optimizer.step()
 
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item()}')
+
 
 
 def test(model, test_data: DataLoader):
@@ -58,10 +59,10 @@ def test(model, test_data: DataLoader):
 
     with torch.no_grad():  # Disable gradient computation during evaluation
         for data in test_data:
-            games, values = data[0], data[1]
+            games, additional_info, values = data[0], data[1], data[2]
 
             # Forward pass
-            outputs = model(games)
+            outputs = model(games, additional_info)
 
             # Compute the loss
             loss = criterion(outputs.view(-1), values)
