@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Create training dataset and dataloader
     # HYPERPARAMETER: Batch size
     train_dataset = TensorDataset(X_train, additional_info_train, y_train)
-    batch_size = 512
+    batch_size = 1024
     shuffle = True
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     # Choose an optimizer (Adam is a commonly used optimizer)
     # HYPERPARAMETER: Learning rate
-    optimizer = optim.Adam(model.parameters(), lr=0.003)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     print("Training starts")
     train(model, optimizer, train_dataloader)

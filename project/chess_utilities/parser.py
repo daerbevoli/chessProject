@@ -57,7 +57,7 @@ def bit_encode(board: chess.Board):
         int(board.has_legal_en_passant()),
         int(board.turn == chess.WHITE)
     ]
-    return bitstring, additional_info # Return the final bitstring representing the board state and the additional info
+    return bitstring, additional_info  # Return the final bitstring representing the board state and the additional info
 
 
 def parse(testing_or_training: str):
