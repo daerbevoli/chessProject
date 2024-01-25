@@ -1,9 +1,9 @@
 import chess
-from project.chess_agents.agent import Agent
+from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
 
 class UciEngine():
     
-    def __init__(self, name: str, author: str, agent: Agent) -> None:
+    def __init__(self, name: str, author: str, agent: MonteCarloChessAgent) -> None:
         self.name = name
         self.author = author
         self.agent = agent
