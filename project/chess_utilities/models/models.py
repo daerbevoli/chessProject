@@ -33,7 +33,7 @@ class ChessEvaluationNetwork(nn.Module):
     # maybe a implementation of convolution layers
     """
     This is a chess evaluation network using a Convolutional Neural Network (CNN) architecture.
-    It takes in a bitboard encoded chess board reshaped to a 2D grid (or 3D including channel dimension)
+    It takes in a bitboard encoded chess board reshaped to a 3D grid
     and outputs a single scalar evaluation value.
     """
 
