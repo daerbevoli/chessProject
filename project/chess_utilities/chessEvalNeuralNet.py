@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     # Choose an optimizer (Adam is a commonly used optimizer)
     # HYPERPARAMETER: Learning rate
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     print("Training starts")
     train(model, optimizer, train_dataloader)
