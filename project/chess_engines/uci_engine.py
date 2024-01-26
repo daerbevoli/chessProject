@@ -2,8 +2,15 @@ import chess
 from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
 
 class UciEngine():
+<<<<<<< HEAD
     
     def __init__(self, name: str, author: str, agent: MonteCarloChessAgent) -> None:
+=======
+    # DEBUG
+    print("UCI Engine is starting...")
+
+    def __init__(self, name: str, author: str, agent: Agent) -> None:
+>>>>>>> SAM
         self.name = name
         self.author = author
         self.agent = agent
@@ -13,9 +20,15 @@ class UciEngine():
         # Create a clean chess board
         board = chess.Board()
 
+        # DEBUG
+        print("UCI Engine started. Waiting for commands...")  # Confirm the engine has started
+
         # Continuously receive commands and process them
         while True:
             input_val = input().split(' ')
+
+            # DEBUG
+            print("Received command:", ' '.join(input_val))  # Log received commands
 
             if len(input_val) > 2:
                 if input_val[0] == "position" and \
@@ -24,7 +37,13 @@ class UciEngine():
                     board = chess.Board()
                     for move in input_val[3::]:
                         board.push_uci(move)
+                        # DEBUG
+                        print("Move applied:", move)  # Log each move applied
+
                 elif input_val[0] == "go":
+                    # DEBUG
+                    print("Calculated move:", move)  # Log the calculated move
+
                     print("bestmove {}".format(self.agent.calculate_move(board)))
 
             elif len(input_val) > 1:
@@ -49,6 +68,13 @@ class UciEngine():
                     
                     
     def __uci(self):
+        # DEBUG
+        print(f"id name {self.name}")
+        print(f"id author {self.author}")
+        print("option name Debug Log File type string default")
+        print("option name Contempt type spin default 0 min -100 max 100")
+        print("uciok")
+
         print("""id name {}
 id author {}
 option name Debug Log File type string default
