@@ -1,0 +1,19 @@
+Index: project/chess_utilities/chessEvalNeuralNet.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import torch\r\nimport numpy as np\r\nfrom torch.utils.data import TensorDataset, DataLoader\r\nimport torch.optim as optim\r\nfrom project.chess_utilities.models.models import ChessEvaluationNetwork\r\nfrom project.chess_utilities.training import train, test\r\nimport os\r\n\r\nif __name__ == \"__main__\":\r\n    # Directory of the current file\r\n    current_dir = os.path.dirname(os.path.abspath(__file__))\r\n\r\n    # Load training data\r\n    X_train = torch.tensor(np.load(os.path.join(current_dir, 'data', 'training', 'positions.npy'))).to(torch.float32)\r\n    y_train = torch.tensor(np.load(os.path.join(current_dir, 'data', 'training', 'results.npy'))).to(torch.float32)\r\n    # DEBUG\r\n    print(\"Training data loaded, Shape of X_train:\", X_train.shape)\r\n\r\n    # Load testing data\r\n    X_test = torch.tensor(np.load(os.path.join(current_dir, 'data', 'testing', 'positions.npy'))).to(torch.float32)\r\n    y_test = torch.tensor(np.load(os.path.join(current_dir, 'data', 'testing', 'results.npy'))).to(torch.float32)\r\n\r\n    # Load additional info for training and testing\r\n    additional_info_train = torch.tensor(np.load(os.path.join(current_dir, 'data', 'training', 'additional_info.npy'))).to(torch.float32)\r\n    additional_info_test = torch.tensor(np.load(os.path.join(current_dir, 'data', 'testing', 'additional_info.npy'))).to(torch.float32)\r\n\r\n    # Create training dataset and dataloader\r\n    # HYPERPARAMETER: Batch size\r\n    train_dataset = TensorDataset(X_train, additional_info_train, y_train)\r\n    batch_size = 512\r\n    shuffle = True\r\n    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)\r\n\r\n    # Create testing dataset and dataloader\r\n    test_dataset = TensorDataset(X_test, additional_info_test, y_test)\r\n    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=shuffle)\r\n\r\n    # Instantiate the model\r\n    model = ChessEvaluationNetwork(num_channels=12, num_additional_info=6)\r\n\r\n    # Choose an optimizer (Adam is a commonly used optimizer)\r\n    # HYPERPARAMETER: Learning rate\r\n    optimizer = optim.Adam(model.parameters(), lr=0.0001)\r\n\r\n    print(\"Training starts\")\r\n    train(model, optimizer, train_dataloader)\r\n    print(\"Training complete\\n\")\r\n\r\n    print(\"Testing starts\")\r\n    test(model, test_dataloader)\r\n    print(\"Testing complete\")\r\n\r\n    # Save the model\r\n    model_path = \"./models/model.pth\"\r\n    torch.save(model.state_dict(), model_path)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/project/chess_utilities/chessEvalNeuralNet.py b/project/chess_utilities/chessEvalNeuralNet.py
+--- a/project/chess_utilities/chessEvalNeuralNet.py	(revision 068f94bf7c4c11aeb773e79aed99ac48b761cc40)
++++ b/project/chess_utilities/chessEvalNeuralNet.py	(date 1706267130569)
+@@ -40,7 +40,7 @@
+ 
+     # Choose an optimizer (Adam is a commonly used optimizer)
+     # HYPERPARAMETER: Learning rate
+-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
++    optimizer = optim.Adam(model.parameters(), lr=0.001)
+ 
+     print("Training starts")
+     train(model, optimizer, train_dataloader)

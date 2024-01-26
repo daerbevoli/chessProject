@@ -1,0 +1,38 @@
+Index: project/chess_agents/minimax_agent.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from project.chess_agents.agent import Agent\r\nimport chess\r\nfrom project.chess_utilities.utility import Utility\r\nimport time\r\nimport random\r\n\r\n\r\nclass MinimaxAgent(Agent):\r\n\r\n    def __init__(self, utility: Utility, time_limit_move: float, depth: int) -> None:\r\n        super().__init__(utility, time_limit_move)\r\n        self.name = \"Agent One\"\r\n        self.author = \"S. Roels & S. Baruwal\"\r\n        self.depth = depth  # The depth of the minimax search tree\r\n\r\n    def minimax(self, board: chess.board, depth: int, alpha: float, beta: float, maximizingPlayer: bool) -> int:\r\n        # By using maximizingPlayer, we don't' have to flip the values\r\n\r\n        start_time = time.time()\r\n\r\n        if depth == 0 or board.is_game_over():\r\n            return self.utility.board_value(board)  # Return the utility value of the board\r\n\r\n        if maximizingPlayer:  # If it's the white player's turn (maximizingPlayer = True), the function looks for\r\n            # moves that maximize the board value.\r\n            maxEval = float('-inf')  # Set the maximum evaluation to -infinity\r\n            for move in list(board.legal_moves):\r\n                # Check if the maximum calculation time for this move has been reached\r\n                if time.time() - start_time > self.time_limit_move:\r\n                    break\r\n                board.push(move)\r\n                eval = self.minimax(board, depth - 1, alpha, beta, False)\r\n                board.pop()\r\n                max_eval = max(max_eval, eval)\r\n                alpha = max(alpha, eval)\r\n                if beta <= alpha:\r\n                    break\r\n            return max_eval\r\n        else:  # If it's the black player's turn (maximizingPlayer = False), the function looks for moves that\r\n            # minimize the board value.\r\n            minEval = float('inf')\r\n            for move in list(board.legal_moves):\r\n                board.push(move)\r\n                eval = self.minimax(board, depth - 1, alpha, beta, True)\r\n                board.pop()\r\n                min_eval = min(min_eval, eval)\r\n                beta = min(beta, eval)\r\n                if beta <= alpha:\r\n                    break\r\n            return min_eval\r\n\r\n    def calculate_move(self, board: chess.Board):\r\n        best_move = None\r\n        best_value = float('-inf')\r\n        alpha = float('-inf')\r\n        beta = float('inf')\r\n\r\n        for move in list(board.legal_moves):\r\n            board.push(move)\r\n            move_value = self.minimax(board, self.depth, alpha, beta, False)\r\n            board.pop()\r\n            if move_value > best_value:\r\n                best_value = move_value\r\n                best_move = move\r\n        return best_move\r\n
+===================================================================
+diff --git a/project/chess_agents/minimax_agent.py b/project/chess_agents/minimax_agent.py
+--- a/project/chess_agents/minimax_agent.py	
++++ b/project/chess_agents/minimax_agent.py	
+@@ -13,8 +13,10 @@
+         self.author = "S. Roels & S. Baruwal"
+         self.depth = depth  # The depth of the minimax search tree
+ 
+-    def minimax(self, board: chess.board, depth: int, alpha: float, beta: float, maximizingPlayer: bool) -> int:
++    def minimax(self, board: chess.Board, depth: int, alpha: float, beta: float, maximizingPlayer: bool) -> int:
+         # By using maximizingPlayer, we don't' have to flip the values
++        # Increasing depth will make your agent stronger but also slower
++        # Alpha-Beta pruning to make the minimax algorithm faster
+ 
+         start_time = time.time()
+ 
+@@ -23,7 +25,7 @@
+ 
+         if maximizingPlayer:  # If it's the white player's turn (maximizingPlayer = True), the function looks for
+             # moves that maximize the board value.
+-            maxEval = float('-inf')  # Set the maximum evaluation to -infinity
++            max_eval = float('-inf')  # Set the maximum evaluation to -infinity
+             for move in list(board.legal_moves):
+                 # Check if the maximum calculation time for this move has been reached
+                 if time.time() - start_time > self.time_limit_move:
+@@ -38,7 +40,7 @@
+             return max_eval
+         else:  # If it's the black player's turn (maximizingPlayer = False), the function looks for moves that
+             # minimize the board value.
+-            minEval = float('inf')
++            min_eval = float('inf')
+             for move in list(board.legal_moves):
+                 board.push(move)
+                 eval = self.minimax(board, depth - 1, alpha, beta, True)
