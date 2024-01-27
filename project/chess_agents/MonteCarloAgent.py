@@ -1,6 +1,4 @@
-from project.chess_agents.agent import Agent
 from project.chess_utilities.utility import Utility
-from project.chess_utilities.nonNNEval import MCTSUtility
 
 import chess
 import random
@@ -39,11 +37,11 @@ class MonteCarloNode:
 
 # A chess agent class using Monte Carlo Tree Search
 class MonteCarloChessAgent():
-    def __init__(self, time_limit_move: float, exploration_weight: float):
+    def __init__(self, time_limit_move: float, exploration_weight: float, utility: Utility()):
         # Initialize the agent with utility, time limit for moves, and exploration weight
         self.time_limit_move = time_limit_move
         self.exploration_weight = exploration_weight
-        self.utility = MCTSUtility()
+        self.utility = utility
 
     def calculate_move(self, board: chess.Board) -> chess.Move:
         # Initialize the root node with the current board state
@@ -97,7 +95,7 @@ class MonteCarloChessAgent():
 
     def best_child(self, node: 'MonteCarloNode') -> 'MonteCarloNode':
         # Select the child node with the highest visit count
-        return max(node.children, key=lambda child: child.visit_count)
+        return max(node.children, key=lambda child: child.total_score)
 
     def calculate_score(self, board: chess.Board) -> float:
-        return self.utility.evaluate(board)
+        return self.utility.board_value(board)

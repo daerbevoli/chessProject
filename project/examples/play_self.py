@@ -4,19 +4,16 @@ import chess.svg
 from project.chess_utilities.example_utility import ExampleUtility
 from project.chess_agents.example_agent import ExampleAgent
 
-from project.chess_utilities.enhanced_utility import EnhancedUtility
-from project.chess_utilities.nonNNEval import MCTSUtility
 from project.chess_utilities.nnUtility import nnUtility
+from project.chess_utilities.StaticEvalUtility import MCTSUtility
 from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
-
-#from project.chess_utilities.nnUtility import nnUtility
 
 """ Two agents play against eachother until the game is finished """
 def play_self():
     # Setup a clean board
     board = chess.Board()
     # Create the white and black agent
-    white_player = MonteCarloChessAgent(5.0, 1.1415)
+    white_player = MonteCarloChessAgent(1.0, 1.1415, MCTSUtility())
     white_player.name = "White Player"
     black_player = ExampleAgent(ExampleUtility(), 1.0)
     black_player.name = "Black Player"
