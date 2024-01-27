@@ -54,7 +54,7 @@ class MCTSUtility(Utility):
         if total_pieces > 26:
             return 'opening'
         elif 10 < total_pieces <= 26:
-            return 'middle game'
+            return 'middlegame'
         else:
             return 'endgame'
 
