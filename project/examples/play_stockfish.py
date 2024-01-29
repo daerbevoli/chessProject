@@ -1,32 +1,33 @@
 #!/usr/bin/python3
-from project.chess_utilities.example_utility import ExampleUtility
-from project.chess_agents.example_agent import ExampleAgent
-from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
 import chess
 import chess.engine
 import chess.pgn
-from project.chess_utilities.nnUtility import nnUtility
+
+from project.chess_agents.MonteCarloAgent import MonteCarloChessAgent
+from project.chess_utilities.EvalUtility import MCTSUtility
 
 """ An agent plays a game against the stockfish engine """
 def play_stockfish():
     
-    time_limit = 5.0
+    time_limit = 1.0
         
     # Setup
     board = chess.Board()
     # Define agent here
-    white_player = MonteCarloChessAgent(nnUtility(), 5.0, 1.0)
+    white_player = MonteCarloChessAgent(1.0, 1.1415, MCTSUtility())
     # Enter your path here:
-    black_player = chess.engine.SimpleEngine.popen_uci("C:/Users/samee/OneDrive/Desktop/stockfish/stockfish.exe")
+    black_player = chess.engine.SimpleEngine.popen_uci("C:/Users/samee/Desktop/stockfish/stockfish.exe")
     # Determine the skill level of Stockfish:
     black_player.configure({"Skill Level": 1})
     limit = chess.engine.Limit(time=time_limit)
 
     running = True
     turn_white_player = True
+    counter = 0
 
     # Game loop
     while running:
+        counter += 1
         move = None
 
         if turn_white_player:
@@ -42,6 +43,7 @@ def play_stockfish():
 
         board.push(move)
         print(board)
+        print("counter: ", counter)
         print("----------------------------------------")
         
         # Check if a player has won
