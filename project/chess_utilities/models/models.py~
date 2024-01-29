@@ -1,0 +1,91 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+board_input_size = 774
+
+
+class ChessEvaluationNetwork(nn.Module):
+    """
+    This is a chess evaluation network that takes in a bitboard encoded (see parser) chess board of size 774
+    and outputs a single scalar evaluation value.
+    The network is a simple feedforward network consisting of three fully connected layers
+    and ReLU activation function between them.
+    """
+
+    def __init__(self, num_channels=12, board_size=8*8, additional_info_size=6):
+        super(ChessEvaluationNetwork, self).__init__()
+
+        # Define convolutional layers
+        self.conv1 = nn.Conv2d(num_channels, 64, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
+
+        # Calculate the size of the flattened conv2 output
+        conv_output_size = 256 * board_size  # Update based on your architecture
+
+        # Define fully connected layers
+        self.fc1 = nn.Linear(conv_output_size + additional_info_size, 512)  # Include additional info in input
+        self.fc2 = nn.Linear(512, 256)
+        self.fc3 = nn.Linear(256, 1)
+
+        self.dropout = nn.Dropout(0.5)
+
+    def forward(self, x, additional_info):
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
+
+        x = x.view(x.size(0), -1)  # Flatten conv2 output
+
+        # Concatenate the additional_info tensor with the flattened conv2 output
+        x = torch.cat((x, additional_info), dim=1)
+
+        # Forward pass through fully connected layers
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        x = self.fc3(x)
+        x = self.dropout(x)
+
+        return x
+    """
+    def __init__(self, num_channels=12, board_size=8*8, additional_info_size=6):
+        super(ChessEvaluationNetwork, self).__init__()
+
+        # Convolutional layers
+        self.conv1 = nn.Conv2d(num_channels, 64, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
+
+        # Batch normalization layers
+        self.bn1 = nn.BatchNorm2d(64)
+        self.bn2 = nn.BatchNorm2d(128)
+        self.bn3 = nn.BatchNorm2d(256)
+
+        # Fully connected layers
+        conv_output_size = 256 * board_size  # size will reduce due to convolutions
+        self.fc1 = nn.Linear(conv_output_size + additional_info_size, 1024)  # Adjust for the additional info
+        self.fc2 = nn.Linear(1024, 1)
+
+        # Dropout layer for regularization
+        self.dropout = nn.Dropout(0.5)
+
+    def forward(self, x, additional_info):
+        # Forward pass through convolutional layers with ReLU activation and batch normalization
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
+
+        # Flatten the tensor for passing it to fully connected layers
+        x = x.view(x.size(0), -1)
+
+        # Concatenate additional_info with the output of the conv layers
+        x = torch.cat((x, additional_info), dim=1)
+
+        # Forward pass through fully connected layers with dropout for regularization
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.fc2(x)
+
+        return x
+    """
