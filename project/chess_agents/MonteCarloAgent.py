@@ -1,6 +1,8 @@
+from typing import List
+
 from project.chess_agents.agent import Agent
 from project.chess_utilities.utility import Utility
-from project.chess_utilities.nonNNEval import MCTSUtility
+from project.chess_utilities.nnUtility import nnUtility
 
 import chess
 import random
@@ -17,6 +19,7 @@ class MonteCarloNode:
         self.children = []
         self.visit_count = 0
         self.total_score = 0
+        self.utility = nnUtility()
 
     def is_fully_expanded(self) -> bool:
         # Check if all legal moves have corresponding child nodes
@@ -27,13 +30,30 @@ class MonteCarloNode:
         return self.board.is_game_over()
 
     def expand(self) -> 'MonteCarloNode':
-        # Generate a new child node by making a random legal move
+        """
+        Generate a new child node by making a promising legal move based on the board value.
+        """
         legal_moves = list(self.board.legal_moves)
         untried_moves = [move for move in legal_moves if move not in [child.move for child in self.children]]
-        new_move = random.choice(untried_moves)
+
+        best_move = None
+        best_move_value = -float('inf')  # Initialize with negative infinity
+
+        # Evaluate each untried move
+        for move in untried_moves:
+            simulated_board = self.board.copy()
+            simulated_board.push(move)
+            move_value = self.utility.board_value(simulated_board)  # Get the value of the board after the move
+
+            # Update best move if the current move has a better value
+            if move_value > best_move_value:
+                best_move = move
+                best_move_value = move_value
+
+        # Create a new node for the best move
         new_board = self.board.copy()
-        new_board.push(new_move)
-        new_node = MonteCarloNode(new_board, move=new_move, parent=self)
+        new_board.push(best_move)
+        new_node = MonteCarloNode(new_board, move=best_move, parent=self)
         self.children.append(new_node)
         return new_node
 
@@ -43,7 +63,7 @@ class MonteCarloChessAgent():
         # Initialize the agent with utility, time limit for moves, and exploration weight
         self.time_limit_move = time_limit_move
         self.exploration_weight = exploration_weight
-        self.utility = MCTSUtility()
+        self.utility = nnUtility()
 
     def calculate_move(self, board: chess.Board) -> chess.Move:
         # Initialize the root node with the current board state
@@ -69,13 +89,47 @@ class MonteCarloChessAgent():
         return node
 
     def simulate(self, node: 'MonteCarloNode') -> float:
-        # Simulate a random game from the current board state
         simulation_board = node.board.copy()
-        while not simulation_board.is_game_over():
+        depth = 0
+        max_depth = 50  # Limit the depth of simulation
+
+        while not simulation_board.is_game_over() and depth < max_depth:
             legal_moves = list(simulation_board.legal_moves)
-            random_move = random.choice(legal_moves)
-            simulation_board.push(random_move)
+
+            # Choose best move based on simple heuristic
+            best_move = self.pick_best_move(simulation_board, legal_moves)
+
+            simulation_board.push(best_move)
+            depth += 1
+
+        # Use calculate_score to determine the game score
         return self.calculate_score(simulation_board)
+
+    def pick_best_move(self, board: chess.Board, legal_moves: List[chess.Move]) -> chess.Move:
+        capture_moves = []
+        check_moves = []
+        promotion_moves = []
+
+        # A simple heuristic to prefer capture moves, checks, and promotions
+        for move in legal_moves:
+            if board.is_capture(move):
+                capture_moves.append(move)
+            if board.gives_check(move):
+                check_moves.append(move)
+            if move.promotion is not None:
+                promotion_moves.append(move)
+
+        # Prefer promotion moves first
+        if promotion_moves:
+            return random.choice(promotion_moves)
+        # Then prefer moves that give a check
+        elif check_moves:
+            return random.choice(check_moves)
+        # Then prefer capture moves
+        elif capture_moves:
+            return random.choice(capture_moves)
+        # If no captures or checks, return a random legal move
+        return random.choice(legal_moves)
 
     def backpropagate(self, node: 'MonteCarloNode', result: float):
         while node is not None:
@@ -100,4 +154,4 @@ class MonteCarloChessAgent():
         return max(node.children, key=lambda child: child.visit_count)
 
     def calculate_score(self, board: chess.Board) -> float:
-        return self.utility.evaluate(board)
+        return self.utility.board_value(board)
